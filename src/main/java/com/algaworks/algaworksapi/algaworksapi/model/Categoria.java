@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "categoria")
@@ -19,6 +20,7 @@ public class Categoria {
     private Long id;
 
     @NotNull
+    @Size(min = 3, max = 80)
     private String nome;
 
 }
