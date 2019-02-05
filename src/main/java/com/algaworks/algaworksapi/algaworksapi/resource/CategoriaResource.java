@@ -1,15 +1,16 @@
 package com.algaworks.algaworksapi.algaworksapi.resource;
 
+import com.algaworks.algaworksapi.algaworksapi.event.RecursoCriadoEvent;
 import com.algaworks.algaworksapi.algaworksapi.model.Categoria;
 import com.algaworks.algaworksapi.algaworksapi.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,6 +20,9 @@ public class CategoriaResource {
 
     @Autowired
     CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @GetMapping
     public ResponseEntity<?> listar() {
@@ -38,10 +42,8 @@ public class CategoriaResource {
         Categoria categoriaSave = categoriaRepository.save(categoria);
 
         //Montar URI para buscar o registro gerado atualmente, retornando ao ser inserido.
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
-                .buildAndExpand(categoriaSave.getId()).toUri();
-        response.setHeader("Location",uri.toASCIIString());
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSave.getId()));
 
-        return ResponseEntity.created(uri).body(categoriaSave);
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSave);
     }
 }
