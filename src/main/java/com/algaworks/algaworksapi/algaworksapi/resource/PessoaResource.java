@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class PessoaResource {
     PessoaRepository pessoaRepository;
 
     @GetMapping
-    public ResponseEntity<?> listarPessoas() {
+    public ResponseEntity<List<Pessoa>> listarPessoas() {
 
         List<Pessoa> pessoas = pessoaRepository.findAll();
         return ResponseEntity.ok().body(pessoas);
@@ -32,7 +33,7 @@ public class PessoaResource {
     }
 
     @PostMapping
-    public ResponseEntity<Pessoa> cadastrarPessoa(@RequestBody Pessoa pessoa, HttpServletResponse response) {
+    public ResponseEntity<Pessoa> cadastrarPessoa(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
 
         Pessoa pessoaSave = pessoaRepository.save(pessoa);
 
