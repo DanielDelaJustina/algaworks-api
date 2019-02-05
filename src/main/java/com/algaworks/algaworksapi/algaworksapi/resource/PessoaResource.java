@@ -3,8 +3,11 @@ package com.algaworks.algaworksapi.algaworksapi.resource;
 import com.algaworks.algaworksapi.algaworksapi.event.RecursoCriadoEvent;
 import com.algaworks.algaworksapi.algaworksapi.model.Pessoa;
 import com.algaworks.algaworksapi.algaworksapi.repository.PessoaRepository;
+import com.algaworks.algaworksapi.algaworksapi.service.PessoaService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,9 @@ public class PessoaResource {
 
     @Autowired
     private ApplicationEventPublisher publisher;
+
+    @Autowired
+    private PessoaService pessoaService;
 
     @GetMapping
     public ResponseEntity<List<Pessoa>> listarPessoas() {
@@ -51,5 +57,19 @@ public class PessoaResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluirPessoa(@PathVariable Long id) {
         pessoaRepository.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long id, @Valid @RequestBody Pessoa pessoa) {
+
+        Pessoa pessoaSalva = pessoaService.atualizarPessoa(id, pessoa);
+        return ResponseEntity.ok(pessoaSalva);
+    }
+
+    @PutMapping("/{id}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
+
+        pessoaService.atualizarAtivo(id, ativo );
     }
 }

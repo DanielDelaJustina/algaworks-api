@@ -34,7 +34,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
         //o parametro (messagem.invalida) é o nome definido no arquivo messages.properties
         String msgUser = messageSource.getMessage("messagem.invalida", null, LocaleContextHolder.getLocale());
-        String msgDev = ex.getCause().toString();
+        String msgDev = ex.getCause()!= null ? ex.getCause().toString() : ex.toString();
 
         List<Erro> erros = Arrays.asList(new Erro(msgUser, msgDev));
 
