@@ -36,11 +36,11 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
         //o parametro (messagem.invalida) é o nome definido no arquivo messages.properties
         String msgUser = messageSource.getMessage("messagem.invalida", null, LocaleContextHolder.getLocale());
-        String msgDev = ex.getCause()!= null ? ex.getCause().toString() : ex.toString();
+        String msgDev = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
 
         List<Erro> erros = Arrays.asList(new Erro(msgUser, msgDev));
 
-        return handleExceptionInternal(ex, erros , headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
@@ -68,6 +68,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
@@ -85,7 +86,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
             String msgUser = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
             String msgDev = fieldError.toString();
-            erros.add(new Erro(msgUser,msgDev));
+            erros.add(new Erro(msgUser, msgDev));
         }
 
         return erros;

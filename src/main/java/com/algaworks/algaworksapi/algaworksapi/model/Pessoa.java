@@ -1,5 +1,6 @@
 package com.algaworks.algaworksapi.algaworksapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +29,11 @@ public class Pessoa {
 
     @Embedded
     private Endereco endereco;
+
+    //Para que o Jackson entenda que não é para serealizar a propriedade
+    @JsonIgnore
+    @Transient
+    public boolean isInativo() {
+        return !this.ativo;
+    }
 }
