@@ -1,6 +1,7 @@
 package com.algaworks.algaworksapi.algaworksapi.repository.lancamento;
 
 import com.algaworks.algaworksapi.algaworksapi.model.Lancamento;
+import com.algaworks.algaworksapi.algaworksapi.model.Lancamento_;
 import com.algaworks.algaworksapi.algaworksapi.repository.filter.LancamentoFilter;
 import org.springframework.util.StringUtils;
 
@@ -42,15 +43,19 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
         // where lower(descricao) like lower('%descrição enviada pelo usuário%')
         if (!StringUtils.isEmpty(lancamentoFilter.getDescricao())) {
             predicates.add(builder.like(
-                    builder.lower(root.get("descricao")), "%" + lancamentoFilter.getDescricao().toLowerCase() + "%"));
+                    builder.lower(root.get(Lancamento_.descricao)), "%" + lancamentoFilter.getDescricao().toLowerCase() + "%"));
         }
 
         if (!StringUtils.isEmpty(lancamentoFilter.getDataVencimentoDe())) {
-
+            predicates.add(
+                    builder.greaterThanOrEqualTo(root.get(Lancamento_.datavencimento), lancamentoFilter.getDataVencimentoDe())
+            );
         }
 
         if (!StringUtils.isEmpty(lancamentoFilter.getDataVencimentoAte())) {
-
+            predicates.add(
+                    builder.lessThanOrEqualTo(root.get(Lancamento_.datavencimento), lancamentoFilter.getDataVencimentoAte())
+            );
         }
 
         return predicates.toArray(new Predicate[predicates.size()]);
