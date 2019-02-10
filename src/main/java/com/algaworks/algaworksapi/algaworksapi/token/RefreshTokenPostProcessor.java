@@ -1,5 +1,6 @@
 package com.algaworks.algaworksapi.algaworksapi.token;
 
+import com.algaworks.algaworksapi.algaworksapi.enumeration.TokenName;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -48,7 +49,7 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
 
     private void adicionarRefreshTokenNoCokie(String refreshToken, HttpServletRequest req, HttpServletResponse resp) {
 
-        Cookie refrCookie = new Cookie("refreshToken", refreshToken);
+        Cookie refrCookie = new Cookie(TokenName.refreshToken.name(), refreshToken);
         refrCookie.setHttpOnly(true);
         refrCookie.setSecure(false); //TODO: mudar para True
         refrCookie.setPath(req.getContextPath() + "/oauth/token");
