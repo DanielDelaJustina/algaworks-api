@@ -1,6 +1,8 @@
 package com.algaworks.algaworksapi.algaworksapi.token;
 
+import com.algaworks.algaworksapi.algaworksapi.config.property.AlgaworksApiProperty;
 import com.algaworks.algaworksapi.algaworksapi.enumeration.TokenName;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
+
+    @Autowired
+    AlgaworksApiProperty algaworksApiProperty;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -51,7 +56,7 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
 
         Cookie refrCookie = new Cookie(TokenName.refreshToken.name(), refreshToken);
         refrCookie.setHttpOnly(true);
-        refrCookie.setSecure(false); //TODO: mudar para True
+        refrCookie.setSecure(algaworksApiProperty.getSeguranca().isEnableHttps()); //TODO: mudar para True
         refrCookie.setPath(req.getContextPath() + "/oauth/token");
         refrCookie.setMaxAge(2592000);
         resp.addCookie(refrCookie);
