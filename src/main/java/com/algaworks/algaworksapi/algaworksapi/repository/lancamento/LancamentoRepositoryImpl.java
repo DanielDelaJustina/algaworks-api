@@ -1,8 +1,11 @@
 package com.algaworks.algaworksapi.algaworksapi.repository.lancamento;
 
+import com.algaworks.algaworksapi.algaworksapi.model.Categoria_;
 import com.algaworks.algaworksapi.algaworksapi.model.Lancamento;
 import com.algaworks.algaworksapi.algaworksapi.model.Lancamento_;
+import com.algaworks.algaworksapi.algaworksapi.model.Pessoa_;
 import com.algaworks.algaworksapi.algaworksapi.repository.filter.LancamentoFilter;
+import com.algaworks.algaworksapi.algaworksapi.repository.projection.Resumolancamento;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +44,31 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
         return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
     }
 
+    @Override
+    public Page<Resumolancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        CriteriaQuery<Resumolancamento> criteria = builder.createQuery(Resumolancamento.class);
+        Root<Lancamento> root = criteria.from(Lancamento.class);
+
+        criteria.select(builder.construct(Resumolancamento.class
+                                , root.get(Lancamento_.id), root.get(Lancamento_.descricao)
+                                , root.get(Lancamento_.datavencimento), root.get(Lancamento_.datapagamento)
+                                , root.get(Lancamento_.valor), root.get(Lancamento_.tipo)
+                                , root.get(Lancamento_.categoria).get(Categoria_.nome)
+                                , root.get(Lancamento_.pessoa).get(Pessoa_.nome)));
+
+        //Adicionar os filtros
+        Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
+        criteria.where(predicates);
+
+        TypedQuery<Resumolancamento> query = manager.createQuery(criteria);
+
+        adicionarRestricoesDePaginacao(query, pageable);
+
+        return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
+    }
+
     private Long total( LancamentoFilter lancamentoFilter) {
 
         CriteriaBuilder builder = manager.getCriteriaBuilder();
@@ -57,7 +85,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
     }
 
-    private void adicionarRestricoesDePaginacao(TypedQuery<Lancamento> query, Pageable pageable) {
+    private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
 
         Integer paginaAtual = pageable.getPageNumber();
         Integer totalDeRegistrosPorPagina = pageable.getPageSize();
