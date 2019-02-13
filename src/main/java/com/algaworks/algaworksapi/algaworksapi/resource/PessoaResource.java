@@ -5,10 +5,8 @@ import com.algaworks.algaworksapi.algaworksapi.model.Pessoa;
 import com.algaworks.algaworksapi.algaworksapi.repository.PessoaRepository;
 import com.algaworks.algaworksapi.algaworksapi.repository.filter.PessoasFilter;
 import com.algaworks.algaworksapi.algaworksapi.service.PessoaService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/pessoas")

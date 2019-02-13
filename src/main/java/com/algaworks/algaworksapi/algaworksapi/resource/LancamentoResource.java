@@ -90,6 +90,18 @@ public class LancamentoResource {
 
         lancamentoRepository.delete(id);
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
+    public ResponseEntity<Lancamento> atualizarLancamento(@PathVariable Long id, @Valid @RequestBody Lancamento lancamento) {
+
+        try {
+            Lancamento lancamentoSalvo = lancamentoService.atualizarLancamento(id, lancamento);
+            return ResponseEntity.ok(lancamentoSalvo);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
 
