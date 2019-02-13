@@ -36,7 +36,7 @@ public class LancamentoService {
             validarPessoa(lancamento);
         }
 
-        BeanUtils.copyProperties(lancamento, lancamentoSalvo, "codigo");
+        BeanUtils.copyProperties(lancamento, lancamentoSalvo, "id");
 
         return lancamentoRepository.save(lancamentoSalvo);
     }
