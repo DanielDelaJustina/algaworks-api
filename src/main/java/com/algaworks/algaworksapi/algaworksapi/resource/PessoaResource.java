@@ -3,11 +3,14 @@ package com.algaworks.algaworksapi.algaworksapi.resource;
 import com.algaworks.algaworksapi.algaworksapi.event.RecursoCriadoEvent;
 import com.algaworks.algaworksapi.algaworksapi.model.Pessoa;
 import com.algaworks.algaworksapi.algaworksapi.repository.PessoaRepository;
+import com.algaworks.algaworksapi.algaworksapi.repository.filter.PessoasFilter;
 import com.algaworks.algaworksapi.algaworksapi.service.PessoaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,10 +35,9 @@ public class PessoaResource {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
-    public ResponseEntity<List<Pessoa>> listarPessoas() {
+    public Page<Pessoa> listarPessoas(PessoasFilter pessoasFilter, Pageable pageable) {
 
-        List<Pessoa> pessoas = pessoaRepository.findAll();
-        return ResponseEntity.ok().body(pessoas);
+        return pessoaRepository.filtrar(pessoasFilter, pageable);
     }
 
     @GetMapping("/{id}")

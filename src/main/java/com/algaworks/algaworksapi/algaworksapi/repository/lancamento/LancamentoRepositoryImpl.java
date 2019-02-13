@@ -4,6 +4,7 @@ import com.algaworks.algaworksapi.algaworksapi.model.Categoria_;
 import com.algaworks.algaworksapi.algaworksapi.model.Lancamento;
 import com.algaworks.algaworksapi.algaworksapi.model.Lancamento_;
 import com.algaworks.algaworksapi.algaworksapi.model.Pessoa_;
+import com.algaworks.algaworksapi.algaworksapi.repository.filter.FiltroGenerico;
 import com.algaworks.algaworksapi.algaworksapi.repository.filter.LancamentoFilter;
 import com.algaworks.algaworksapi.algaworksapi.repository.projection.Resumolancamento;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,9 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
         TypedQuery<Lancamento> query = manager.createQuery(criteria);
 
-        adicionarRestricoesDePaginacao(query, pageable);
+        FiltroGenerico filtroGenerico = new FiltroGenerico();
+
+        filtroGenerico.adicionarRestricoesDePaginacao(query, pageable);
 
         return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
     }
@@ -64,7 +67,9 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
         TypedQuery<Resumolancamento> query = manager.createQuery(criteria);
 
-        adicionarRestricoesDePaginacao(query, pageable);
+        FiltroGenerico filtroGenerico = new FiltroGenerico();
+
+        filtroGenerico.adicionarRestricoesDePaginacao(query, pageable);
 
         return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
     }
@@ -83,16 +88,6 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
         return manager.createQuery(criteria).getSingleResult();
 
-    }
-
-    private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
-
-        Integer paginaAtual = pageable.getPageNumber();
-        Integer totalDeRegistrosPorPagina = pageable.getPageSize();
-        Integer primeiroRegistroDaPagina = paginaAtual * totalDeRegistrosPorPagina;
-
-        query.setFirstResult(primeiroRegistroDaPagina);
-        query.setMaxResults(totalDeRegistrosPorPagina);
     }
 
     private Predicate[] criarRestricoes(LancamentoFilter lancamentoFilter, CriteriaBuilder builder,
